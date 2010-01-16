@@ -1,22 +1,15 @@
 require 'rubygems'
 require 'sinatra'
-
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/vendor/sequel'
-require 'sequel'
+require 'dm-core'
+require 'dm-tags'
+require 'dm-timestamps'
+require 'lib/post'
+require 'maruku'
+require 'blog.settings'
 
 configure do
-	Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://blog.db')
-
-	require 'ostruct'
-	Blog = OpenStruct.new(
-		:title => 'a scanty blog',
-		:author => 'John Doe',
-		:url_base => 'http://localhost:4567/',
-		:admin_password => 'changeme',
-		:admin_cookie_key => 'scanty_admin',
-		:admin_cookie_value => '51d6d976913ace58',
-		:disqus_shortname => nil
-	)
+	DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:./blog.db')
+  DataMapper.auto_upgrade!
 end
 
 error do
@@ -25,9 +18,6 @@ error do
 	puts e.backtrace.join("\n")
 	"Application error"
 end
-
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/lib')
-require 'post'
 
 helpers do
 	def admin?
@@ -44,15 +34,15 @@ layout 'layout'
 ### Public
 
 get '/' do
-	posts = Post.reverse_order(:created_at).limit(10)
-	erb :index, :locals => { :posts => posts }, :layout => false
+	@posts = Post.last(10).reverse
+	erb :index, :layout => false
 end
 
 get '/past/:year/:month/:day/:slug/' do
-	post = Post.filter(:slug => params[:slug]).first
-	stop [ 404, "Page not found" ] unless post
-	@title = post.title
-	erb :post, :locals => { :post => post }
+	@post = Post.first(:slug => params[:slug])
+	stop [ 404, "Page not found" ] unless @post
+	@title = @post.title
+	erb :post
 end
 
 get '/past/:year/:month/:day/:slug' do
@@ -60,20 +50,20 @@ get '/past/:year/:month/:day/:slug' do
 end
 
 get '/past' do
-	posts = Post.reverse_order(:created_at)
+	@posts = Post.reverse
 	@title = "Archive"
-	erb :archive, :locals => { :posts => posts }
+	erb :archive
 end
 
 get '/past/tags/:tag' do
-	tag = params[:tag]
-	posts = Post.filter(:tags.like("%#{tag}%")).reverse_order(:created_at).limit(30)
-	@title = "Posts tagged #{tag}"
-	erb :tagged, :locals => { :posts => posts, :tag => tag }
+	@tag = params[:tag]
+	@posts = Post.tagged_with(@tag).reverse
+	@title = "Posts tagged #{@tag}"
+	erb :tagged
 end
 
 get '/feed' do
-	@posts = Post.reverse_order(:created_at).limit(20)
+	@posts = Post.last(20)
 	content_type 'application/atom+xml', :charset => 'utf-8'
 	builder :feed
 end
@@ -94,30 +84,31 @@ post '/auth' do
 end
 
 get '/posts/new' do
-	auth
-	erb :edit, :locals => { :post => Post.new, :url => '/posts' }
+	auth	
+	erb :new
 end
 
 post '/posts' do
 	auth
-	post = Post.new :title => params[:title], :tags => params[:tags], :body => params[:body], :created_at => Time.now, :slug => Post.make_slug(params[:title])
+	post = Post.create(:title => params[:title], :body => params[:body], :slug => Post.make_slug(params[:title]))
+	post.tag_list = params[:tags]
 	post.save
 	redirect post.url
 end
 
 get '/past/:year/:month/:day/:slug/edit' do
 	auth
-	post = Post.filter(:slug => params[:slug]).first
-	stop [ 404, "Page not found" ] unless post
-	erb :edit, :locals => { :post => post, :url => post.url }
+	@post = Post.first(:slug => params[:slug])
+	stop [ 404, "Page not found" ] unless @post
+	erb :edit
 end
 
 post '/past/:year/:month/:day/:slug/' do
 	auth
-	post = Post.filter(:slug => params[:slug]).first
+	post = Post.first(:slug => params[:slug])
 	stop [ 404, "Page not found" ] unless post
 	post.title = params[:title]
-	post.tags = params[:tags]
+	post.tag_list = params[:tags]
 	post.body = params[:body]
 	post.save
 	redirect post.url

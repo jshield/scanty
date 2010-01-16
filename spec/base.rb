@@ -1,8 +1,10 @@
 require 'rubygems'
 require 'spec'
-require 'sequel'
+require 'dm-core'
+require 'dm-tags'
+require 'dm-timestamps'
 
-Sequel.sqlite
+DataMapper.setup(:default,'sqlite3::memory:')
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 require 'post'

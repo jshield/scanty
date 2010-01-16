@@ -17,20 +17,22 @@ the starting point for your blog, too.
 * Atom feed
 * Comments via Disqus
 * Web framework = Sinatra
-* ORM = Sequel
+* ORM = DataMapper
+
+Added By James Alexander Shield
+
+* Add This Integration[optional] (require registration)
 
 == Dependencies
 
-  $ gem install sinatra
-
-Sequel, Maruku, and Syntax are all vendored.
+  $ gem install sinatra dm-core dm-tags dm-timestamps syntax maruku
 
 == Setup
 
-Edit main.rb and change the Blog config struct at the top to your liking.  For
-security purposes, change the admin password and the admin cookie key and
-value.  These last two can be set to any random value you like, just choose
-something other than the default.
+Rename dist.settings.rb to blog.settings.rb and change the Blog config struct 
+to your liking.  For security purposes, change the admin password and the 
+admin cookie key and value.  These last two can be set to any random value you like, 
+just choose something other than the default.
 
 Then run the server:
 
@@ -52,7 +54,7 @@ DATABASE_URL in your environment when running the app, i.e.:
 
   $ DATABASE_URL='mysql://localhost/myblog' ruby main.rb
 
-Or, modify the Sequel.connect statement at the top of main.rb.
+Or, modify the DataMapper.setup statement at the top of main.rb.
 
 The database will be created automatically when the server is executed.
 
@@ -75,9 +77,11 @@ edit the CSS or the code as you see fit.
 
 == Meta
 
-Written by Adam Wiggins
+Originally Written by Adam Wiggins
 
 Patches contributed by: Christopher Swenson, S. Brent Faulkner, and Stephen Eley
+
+ORM and other changes by James Alexander Shield
 
 Released under the MIT License: http://www.opensource.org/licenses/mit-license.php
 

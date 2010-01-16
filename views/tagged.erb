@@ -1,5 +1,5 @@
-<h1>Posts tagged <%= tag %></h1>
-<% posts.each do |post| %>
+<h1>Posts tagged <%= @tag %></h1>
+<% @posts.each do |post| %>
 <div class="post">
 	<p class="date"><%= post[:created_at].strftime("%b") %><b><%= post[:created_at].strftime("%d") %></b></p>
 	<h2 class="title"><a href="<%= post.url %>"><%= post[:title] %></a></h2>

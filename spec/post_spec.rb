@@ -28,8 +28,8 @@ describe Post do
 	end
 
 	it "makes the tags into links to the tag search" do
-		@post.tags = "one two"
-		@post.linked_tags.should == '<a href="/past/tags/one">one</a> <a href="/past/tags/two">two</a>'
+		@post.tag_list = "one, two"
+		@post.linked_tags.should == '<a href="/past/tags/two">two</a> <a href="/past/tags/one">one</a>'
 	end
 
 	it "can save itself (primary key is set up)" do

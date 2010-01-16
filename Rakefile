@@ -38,8 +38,10 @@ task :stop do
 end
 
 task :environment do
-	require 'sequel'
-	DB = Sequel.connect('sqlite://blog.db')
+	require 'dm-core'
+  require 'dm-tags'
+  require 'dm-timestamps'
+	DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:./blog.db')
 	$LOAD_PATH.unshift(File.dirname(__FILE__) + '/lib')
 	require 'post'
 end

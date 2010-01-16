@@ -42,6 +42,7 @@ hr {
 	margin: 0;
 	height: 160px;
 	padding: 40px 0 0 0px;
+	margin-bottom: 2px;
 	text-transform: lowercase;
 	letter-spacing: -2px;
 	font-size: 4em;

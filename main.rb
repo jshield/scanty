@@ -35,7 +35,7 @@ layout 'layout'
 ### Public
 
 get '/' do
-	@posts = Post.last(10).reverse
+	@posts = Post.last(10)
 	erb :index, :layout => false
 end
 

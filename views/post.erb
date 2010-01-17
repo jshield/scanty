@@ -1,7 +1,7 @@
 <div class="postzoom">
 	<h2 class="title"><%= @post.title %></h2>
 	<p class="meta"><small><%= @post.linked_tags %></small></p>
-	<p class="meta"><%= @post.created_at %></p>
+	<p class="meta"><%= @post.created_at.strftime("%d %b %Y at %H:%M") %></p>
 	<div class="entry">
 		<%= @post.body_html %>
 	</div>

@@ -5,6 +5,7 @@ require 'dm-tags'
 require 'dm-timestamps'
 require 'lib/post'
 require 'maruku'
+require 'builder'
 require 'blog.settings'
 
 configure do

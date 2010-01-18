@@ -10,6 +10,7 @@ require 'builder'
 require 'blog.settings'
 
 configure do
+  enable :sessions
 	DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:./blog.db')
   DataMapper.auto_upgrade!
 end
@@ -23,12 +24,16 @@ end
 
 helpers do
 	def admin?
-		request.cookies[Blog.admin_cookie_key] == Blog.admin_cookie_value
+		return session[:auth]
 	end
 
 	def auth
 		stop [ 401, 'Not authorized' ] unless admin?
 	end
+	
+  def logout
+    session[:auth] = false
+  end
 end
 
 layout 'layout'
@@ -81,8 +86,13 @@ get '/auth' do
 end
 
 post '/auth' do
-	set_cookie(Blog.admin_cookie_key, Blog.admin_cookie_value) if params[:password] == Blog.admin_password
+	session[:auth] = true if params[:password] == Blog.admin_password
 	redirect '/'
+end
+
+get '/logout' do
+  logout
+  redirect '/'
 end
 
 get '/posts/new' do

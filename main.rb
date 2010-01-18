@@ -1,4 +1,5 @@
 require 'rubygems'
+gem 'sinatra-sinatra'
 require 'sinatra'
 require 'dm-core'
 require 'dm-tags'

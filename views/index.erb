@@ -25,7 +25,7 @@
 			<%= post.linked_tags %>
 			<% if Blog.disqus_shortname %>
 				| <a href="<%= post.url %>#disqus_thread">comments</a>
-			<% end %>
+			<% end %> | <%= post.body.split.size %> Words
 		</small></p>
 		<div class="entry">
 			<%= post.summary_html %>

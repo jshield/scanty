@@ -8,6 +8,11 @@ require 'lib/post'
 require 'maruku'
 require 'builder'
 require 'blog.settings'
+if Blog.openid_identifier
+gem 'ruby-openid', '>=2.1.2'
+require 'openid'
+require 'openid/store/filesystem'
+end
 
 configure do
   enable :sessions
@@ -33,6 +38,16 @@ helpers do
 	
   def logout
     session[:auth] = false
+  end
+  if Blog.openid_identifier
+    def openid_consumer
+      @openid_consumer ||= OpenID::Consumer.new(session,
+          OpenID::Store::Filesystem.new("#{File.dirname(__FILE__)}/tmp/openid"))  
+    end
+
+    def root_url
+      request.url.match(/(^.*\/{2}[^\/]*)/)[1]
+    end
   end
 end
 
@@ -85,9 +100,56 @@ get '/auth' do
 	erb :auth
 end
 
+get '/auth/openid' do
+  if Blog.openid_identifier
+	  erb :auth_openid
+	else
+	  erb :auth
+	end
+end
+
 post '/auth' do
 	session[:auth] = true if params[:password] == Blog.admin_password
 	redirect '/'
+end
+
+post '/auth/openid' do
+  if Blog.openid_identifier
+    openid = params[:openid_identifier]
+    begin
+      oidreq = openid_consumer.begin(openid)
+    rescue OpenID::DiscoveryFailure => why
+      "Sorry, we couldn't find your identifier '#{openid}'"
+    else
+      oidreq.add_extension_arg('sreg','required','nickname')
+      oidreq.add_extension_arg('sreg','optional','fullname, email')      
+      redirect oidreq.redirect_url(root_url, root_url + "/auth/openid/complete")
+    end
+  end
+end
+
+get '/auth/openid/complete' do
+  oidresp = openid_consumer.complete(params, request.url)
+
+  case oidresp.status
+    when OpenID::Consumer::FAILURE
+      "Sorry, we could not authenticate you with the identifier '{openid}'."
+
+    when OpenID::Consumer::SETUP_NEEDED
+      "Immediate request failed - Setup Needed"
+
+    when OpenID::Consumer::CANCEL
+      "Login cancelled."
+
+    when OpenID::Consumer::SUCCESS
+      if oidresp.display_identifier == Blog.openid_identifier
+        session[:auth] = true
+        redirect '/' 
+      else
+        logout
+        redirect '/'  
+      end  
+  end
 end
 
 get '/logout' do

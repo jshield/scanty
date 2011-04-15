@@ -1,2 +1,6 @@
 *.log
 blog.db
+blog.settings.rb
+tmp/*
+tmp
+Gemfile.lock

@@ -1,0 +1,24 @@
+.postzoom
+  %h2.title= @post.title
+  %p.meta
+    %small= @post.linked_tags
+  %p.meta= @post.created_at.strftime("%d %b %Y at %H:%M")
+  .entry
+    = @post.body_html
+  - if admin?
+    .edit
+      %a{:href => "#{@post.url}edit"} edit
+- if Blog.add_this
+  / AddThis Button BEGIN
+  %a.addthis_button{:href => "http://www.addthis.com/bookmark.php?v=250&amp;username=#{Blog.add_this}"}
+    %img{:alt => "Bookmark and Share", :height => "16", :src => "http://s7.addthis.com/static/btn/v2/lg-share-en.gif", :style => "border:0", :width => "125"}/
+  %script{:src => "http://s7.addthis.com/js/250/addthis_widget.js#username=#{Blog.add_this}", :type => "text/javascript"}
+  / AddThis Button END
+- if Blog.disqus_shortname
+  #disqus_thread
+  %script{:src => "http://disqus.com/forums/#{Blog.disqus_shortname}/embed.js", :type => "text/javascript"}
+  %noscript
+    %a{:href => "http://#{Blog.disqus_shortname}.disqus.com/?url=ref"} View the discussion thread.
+  %a.dsq-brlink{:href => "http://disqus.com"}
+    blog comments powered by
+    %span.logo-disqus Disqus

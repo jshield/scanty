@@ -4,10 +4,11 @@ require 'dm-core'
 require 'dm-tags'
 require 'dm-timestamps'
 require 'dm-migrations'
-require 'lib/post'
+require './lib/post'
 require 'maruku'
 require 'builder'
-require 'blog.settings'
+require 'haml'
+require './blog.settings'
 if Blog.openid_identifier
 gem 'ruby-openid', '>=2.1.2'
 require 'openid'
@@ -57,14 +58,14 @@ layout 'layout'
 
 get '/' do
 	@posts = Post.last(10)
-	erb :index, :layout => false
+	haml :index, :layout => false
 end
 
 get '/past/:year/:month/:day/:slug/' do
 	@post = Post.first(:slug => params[:slug])
 	stop [ 404, "Page not found" ] unless @post
 	@title = @post.title
-	erb :post
+	haml :post
 end
 
 get '/past/:year/:month/:day/:slug' do
@@ -74,14 +75,14 @@ end
 get '/past' do
 	@posts = Post.reverse
 	@title = "Archive"
-	erb :archive
+	haml :archive
 end
 
 get '/past/tags/:tag' do
 	@tag = params[:tag]
 	@posts = Post.tagged_with(@tag).reverse
 	@title = "Posts tagged #{@tag}"
-	erb :tagged
+	haml :tagged
 end
 
 get '/feed' do
@@ -97,14 +98,14 @@ end
 ### Admin
 
 get '/auth' do
-	erb :auth
+	haml :auth
 end
 
 get '/auth/openid' do
   if Blog.openid_identifier
-	  erb :auth_openid
+	  haml :auth_openid
 	else
-	  erb :auth
+	  haml :auth
 	end
 end
 
@@ -159,7 +160,7 @@ end
 
 get '/posts/new' do
 	auth	
-	erb :new
+	haml :new
 end
 
 post '/posts' do
@@ -174,7 +175,7 @@ get '/past/:year/:month/:day/:slug/edit' do
 	auth
 	@post = Post.first(:slug => params[:slug])
 	stop [ 404, "Page not found" ] unless @post
-	erb :edit
+	haml :edit
 end
 
 post '/past/:year/:month/:day/:slug/' do

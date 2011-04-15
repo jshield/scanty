@@ -1,0 +1,28 @@
+%html{:xmlns => "http://www.w3.org/1999/xhtml"}
+  %head
+    %meta{:content => "text/html; charset=utf-8", "http-equiv" => "content-type"}/
+    %title= @title || Blog.title
+    %link{:href => "/main.css", :rel => "stylesheet", :type => "text/css"}/
+  %body
+    #header
+      #limg2
+        %img{:height => "55px", :src => "http://static.daedulus.net/i/tux/pspgamer-1950s-tux-.png", :width => "55px"}/
+      #logo2
+        %h1
+          %a{:href => "/"}= Blog.title
+        %p
+          by #{Blog.author}
+    #content
+      = yield
+    #footer
+      %p#legal
+        Content by #{Blog.author} |
+        Design adapted from
+        %a{:href => "http://www.freecsstemplates.org/preview/replenish"} Replenish
+        |
+        Tux Image by
+        %a{:href => "http://tux.crystalxp.net/en.id.3375-pspgamer-1950s-tux-.html"} pspgamer
+        |
+        This blog is a part of the
+        %a{:href => "http://www.daedulus.net"} Daedulus
+        Network

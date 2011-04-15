@@ -1,0 +1,10 @@
+%h2 Admin Auth
+- if Blog.openid_identifier
+  %strong via Password
+  %small
+    %a{:href => "/auth/openid"} via OpenID
+%form{:action => "/auth", :method => "post"}
+  %input{:name => "password", :type => "password"}/
+  %input{:type => "submit", :value => "Login"}/
+:javascript
+  document.forms[0].password.focus()

@@ -1,0 +1,9 @@
+%h2 Admin Auth
+%small
+  %a{:href => "/auth"} via Password
+%strong via OpenID
+%form{"accept-charset" => "UTF-8", :action => "/auth/openid", :method => "post"}
+  %input{:name => "openid_identifier", :style => "background: url(http://openid.net/images/login-bg.gif) no-repeat #FFF 5px;", :type => "text"}/
+  %input{:type => "submit", :value => "Login"}/
+:javascript
+  document.forms[0].openid_identifier.focus()

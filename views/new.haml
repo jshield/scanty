@@ -1,0 +1,11 @@
+%form{:action => "/posts", :method => "post", :name => "edit"}
+  .postzoom
+    %h2.title
+      %input{:name => "title", :type => "text", :value => ""}/
+    %p.meta
+      %input{:name => "tags", :type => "text", :value => ""}/
+    %p.meta
+    .entry
+      %textarea{:name => "body"}
+    .edit
+      %input{:type => "submit", :value => "Save"}/

@@ -10,15 +10,15 @@ require 'builder'
 require 'haml'
 require './blog.settings'
 if Blog.openid_identifier
-gem 'ruby-openid', '>=2.1.2'
-require 'openid'
-require 'openid/store/filesystem'
+    gem 'ruby-openid', '>=2.1.2'
+    require 'openid'
+    require 'openid/store/filesystem'
 end
 
 configure do
-  enable :sessions
-	DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:./blog.db')
-  DataMapper.auto_upgrade!
+    enable :sessions
+    DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:./blog.db')
+    DataMapper.auto_upgrade!
 end
 
 error do
@@ -34,7 +34,7 @@ helpers do
 	end
 
 	def auth
-		stop [ 401, 'Not authorized' ] unless admin?
+		halt [ 401, 'Not authorized' ] unless admin?
 	end
 	
   def logout
@@ -63,7 +63,7 @@ end
 
 get '/past/:year/:month/:day/:slug/' do
 	@post = Post.first(:slug => params[:slug])
-	stop [ 404, "Page not found" ] unless @post
+	halt [ 404, "Page not found" ] unless @post
 	@title = @post.title
 	haml :post
 end
@@ -174,14 +174,14 @@ end
 get '/past/:year/:month/:day/:slug/edit' do
 	auth
 	@post = Post.first(:slug => params[:slug])
-	stop [ 404, "Page not found" ] unless @post
+	halt [ 404, "Page not found" ] unless @post
 	haml :edit
 end
 
 post '/past/:year/:month/:day/:slug/' do
 	auth
 	post = Post.first(:slug => params[:slug])
-	stop [ 404, "Page not found" ] unless post
+	halt [ 404, "Page not found" ] unless post
 	post.title = params[:title]
 	post.tag_list = params[:tags]
 	post.body = params[:body]

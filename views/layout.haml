@@ -13,6 +13,11 @@
         %p
           by #{Blog.author}
     #content
+      - if admin?
+        #new_post
+          %a{:href => "/posts/new"} New post
+          |
+          %a{:href => "/logout"} Logout
       = yield
     #footer
       %p#legal
@@ -23,6 +28,6 @@
         Tux Image by
         %a{:href => "http://tux.crystalxp.net/en.id.3375-pspgamer-1950s-tux-.html"} pspgamer
         |
-        This blog is a part of the
-        %a{:href => "http://www.daedulus.net"} Daedulus
-        Network
+        - if Blog.main_site
+          This blog is a part of the
+          %a{:href => Blog.main_site_url} #{Blog.main_site}

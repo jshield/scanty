@@ -4,3 +4,4 @@ blog.settings.rb
 tmp/*
 tmp
 Gemfile.lock
+.project

@@ -38,7 +38,7 @@ task :stop do
 end
 
 task :environment do
-	require 'dm-core'
+  require 'dm-core'
   require 'dm-tags'
   require 'dm-timestamps'
 	DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:./blog.db')

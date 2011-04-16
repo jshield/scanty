@@ -38,8 +38,7 @@
         %p
           %a{:href => "/auth"}> Log in
           , then
-          = succeed "." do
-            %a{:href => "/posts/new"} create a post
+          %a{:href => "/posts/new"} create a post
       - else
         #older_posts
           %a{:href => "/past"} Archive
@@ -71,6 +70,6 @@
         Tux Image by
         %a{:href => "http://tux.crystalxp.net/en.id.3375-pspgamer-1950s-tux-.html"} pspgamer
         |
-        This blog is a part of the
-        %a{:href => "http://www.daedulus.net"} Daedulus
-        Network
+        - if Blog.main_site
+          This blog is a part of the
+          %a{:href => Blog.main_site_url} #{Blog.main_site}

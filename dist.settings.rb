@@ -3,7 +3,7 @@ Blog = OpenStruct.new(
     :title => 'a scanty blog',
     :author => 'John Doe',
     :url_base => 'http://localhost:4567/',
-
+    :database_url => 'sqlite:/.blog.db',
     :admin_password => 'changeme',
     :openid_identifier => nil,
     :admin_cookie_key => 'scanty_admin',

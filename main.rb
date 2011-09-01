@@ -17,7 +17,7 @@ end
 
 configure do
     enable :sessions
-    DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:./blog.db')
+    DataMapper.setup( :default, ENV['DATABASE_URL'] || Blog.database_url )
     DataMapper.auto_upgrade!
 end
 

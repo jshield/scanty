@@ -10,3 +10,6 @@ gem 'dm-migrations'
 gem 'dm-validations'
 gem 'dm-timestamps'
 gem 'dm-sqlite-adapter'
+
+#webservers
+gem 'thin'
